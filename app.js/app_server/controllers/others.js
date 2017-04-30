@@ -1,6 +1,6 @@
 
-/* Get 'home' page*/
+/* Get 'about' page*/
 
-module.exports.about = function(res, req){
-	res.render('index', {title: 'Express'})
+module.exports.about = function(req, res){
+	res.render('index', {title: 'About'});
 };
