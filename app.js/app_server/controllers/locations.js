@@ -2,17 +2,17 @@
 
 /* Get homeList */
 
-module.exports.homeList = function(req, res){
+module.exports.homelist = function(req, res){
 	res.render('locations-list', {title: 'Home'});
 };
 
 /* Get locationInfo */
-module.exports.locationInfo = function(req, res){
+module.exports.locationinfo = function(req, res){
 	res.render('index', {title:'locationInfo'});
 };
 
 /* Get addReview */
-module.exports.addReview = function(req, res){
+module.exports.addreview = function(req, res){
 	res.render('index', {title:'addReview'});
 };
 
