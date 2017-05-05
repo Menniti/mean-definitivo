@@ -8,11 +8,11 @@ module.exports.homelist = function(req, res){
 
 /* Get locationInfo */
 module.exports.locationinfo = function(req, res){
-	res.render('index', {title:'locationInfo'});
+	res.render('location-info', {title:'locationInfo'});
 };
 
 /* Get addReview */
 module.exports.addreview = function(req, res){
-	res.render('index', {title:'addReview'});
+	res.render('location-review-form', {title:'addReview'});
 };
 
