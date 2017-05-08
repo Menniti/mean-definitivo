@@ -9,7 +9,7 @@ module.exports.homelist = function(req, res){
 			title: 'Loc8r',
 			strapline: 'Find places to work with wifi near you!'
 		},
-		locations:{
+		locations: [{
 			name: 'Starcups',
 			address: '125 High Street, Reading, RG6 1PS',
 			rating: 3,
@@ -17,18 +17,17 @@ module.exports.homelist = function(req, res){
 			distance: '100m'
 		},{
 			name: 'Cafe Hero',
-			address: '1225 High Street'
+			address: '1225 High Street',
 			rating: 4,
 			facilities: ['Hot drinks HOT', 'Food HOT'],
 			distance: '200m'
 		},{
 			name: 'Burguer Queen',
-			address: '1225 High Street, reading'
+			address: '1225 High Street, reading',
 			rating: 2,
 			facilities: ['Cold drinks cold', 'cold Food'],
 			distance: '1250m'
-		}
-
+		}]
 	});
 };
 
