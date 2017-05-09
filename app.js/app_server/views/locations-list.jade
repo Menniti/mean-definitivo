@@ -1,5 +1,11 @@
 extends layout
 
+mixin outputRating(rating)
+	for (var i = 1; i <= rating; i++)
+	span.glyphicon.glyphicon-star
+	for (var i = rating; i < 5; i++)
+	span.glyphicon.glyphicon-star
+	
 block content
 	#banner-page-header
 		.row
