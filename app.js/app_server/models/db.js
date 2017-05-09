@@ -3,14 +3,14 @@ var dbURI = 'mongodb://localhost/loc8r';
 
 mongoose.connect('dbURL');
 
-mongoose.connect.on('connect', function(){
+mongoose.connection.on('connect', function(){
 	console.log('Mongoose connect to'+ dbURI);
 });
 
-mongoose.connect.on('error', function(err){
+mongoose.connection.on('error', function(err){
 	console.log('Mongoose connection error' + err);
 });
 
-mongoose.connect.on('disconnected', function(){
+mongoose.connection.on('disconnected', function(){
 	console.log('Mongoose disconnect');
 });
