@@ -14,3 +14,11 @@ mongoose.connection.on('error', function(err){
 mongoose.connection.on('disconnected', function(){
 	console.log('Mongoose disconnect');
 });
+
+var gracefulShutdown = function(msg, callback) {
+	mongoose.connection.close(function (){
+		console.log('Mongoose disconnect through' + msg);
+		callback();
+	});
+};
+
