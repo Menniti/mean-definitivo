@@ -44,21 +44,31 @@ module.exports.locationinfo = function(req, res){
 			facilities: ['Hot drinks', 'Food', 'Premium Wifi'],
 			distance: '100m',
 			mapUrl: 'http://www.cbronline.com/wp-content/uploads/2016/06/what-is-URL.jpg',
-			opening: ['Monday - Friday : 7:00am - 7:00pm',
-						'Saturday - 8:00am - 5:00pm',
-						'Sunday : closed'
-			]  
+			openingTimes: [{
+				days: 'Monday - Friday',
+				opening: '7:00am',
+				close: '7:00pm',
+				closed: false
+			},{
+				days: 'Saturday',
+				opening: '8:00am', 
+				close: '5:00pm',
+				closed: false
+			},{
+				days: 'Sunday',
+				closed: true	
+			}]  
 		},
 		reviews:{
 			authors: [{
 				name: 'Simon Holmes',
-				date: '16 July 2013',
-				comment: 'What a great place. I cant say enough good things about it',
+				timestamp: '16 July 2013',
+				reviewText: 'What a great place. I cant say enough good things about it',
 				rating: 3,
 			},{
 				name: 'Charlie Chaplin16',
-				date: '16 July 2013',
-				comment: 'It was okay. Coffee wasnt great, but the wifi was fast.',
+				timestamp: '16 July 2013',
+				reviewText: 'It was okay. Coffee wasnt great, but the wifi was fast.',
 				rating: 4,
 			}]
 		}
