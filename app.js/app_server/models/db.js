@@ -1,8 +1,11 @@
 var mongoose = require('mongoose');
+require('./locations')
+// define uma variavel de conneccao com o mongoose
 var dbURI = 'mongodb://127.0.0.1:27017/Loc8r';
 
 mongoose.connect(dbURI);
 
+// rastreia eventos de connecao com o mongoose
 mongoose.connection.on('connect', function(){
 	console.log('Mongoose connect to'+ dbURI);
 });
@@ -16,7 +19,6 @@ mongoose.connection.on('disconnected', function(){
 });
 
 // Eventos de encerramento de processos
-
 var gracefulShutdown = function(msg, callback) {
 	mongoose.connection.close(function (){
 		console.log('Mongoose disconnect through' + msg);
@@ -25,7 +27,6 @@ var gracefulShutdown = function(msg, callback) {
 };
 
 // rastreadores quando a aplicação reinicia
-
 // rastreia o sinal SIGUSR2 que o nodemon usa
 process.once('SIGUSR2', function(){
 	gracefulShutdown('nodemon restart', function(){
@@ -34,6 +35,7 @@ process.once('SIGUSR2', function(){
 	});
 });
 
+// rastreadores quano a aplicacao encerra
 // Rastreia o sinal SIGINT emitido quando a aplicação é encerrada
 process.on('SIGINT', function(){
 	gracefulShutdown('app terminator', function(){
