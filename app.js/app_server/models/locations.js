@@ -1,7 +1,38 @@
-
+// incluindo mongoose
 var mongoose = require('mongoose');
 
-var locationScheema = new mongoose.Schema({
+//sub-document - Schema openTime
+var openingTimeSchema = new mongoose.Schema({
+	days: {
+		type: String, 
+		required: true,
+	},
+	opening: String,
+	closing: String,
+	closed: {
+		type: Boolean,
+		required: true
+	}
+});
+
+//sub-document - Schema review
+var reviewSchema = new mongoose.Schema({
+	author: String,
+	rating: {
+		type: Number,
+		required: true,
+		min: 0,
+		max: 5
+	},
+	reviewText: String,
+	createdOn: {
+		type: Date,
+		"default": Date.now
+	}
+});
+
+//document - Schema location
+var locationSchema = new mongoose.Schema({
 	name: {
 		type: String,
 		required: true
@@ -15,8 +46,13 @@ var locationScheema = new mongoose.Schema({
 	},
 	// declarando array
 	facilities: [String],
+	// coordenadas e pares de coordenadas geográficas.
 	coords: {
 		type: [Number],
 		index: '2dsphere'
-	}
+	},
+	openingTimes: [openingTimeSchema],
+	reviews: [reviewSchema]
+
 });
+
