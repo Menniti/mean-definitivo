@@ -1,3 +1,5 @@
+'use strict';
+
 // incluindo mongoose
 var mongoose = require('mongoose');
 
@@ -55,4 +57,7 @@ var locationSchema = new mongoose.Schema({
 	reviews: [reviewSchema]
 
 });
+
+// nomeia o locationSchema para ser chamado de Location pelo controller
+mongoose.model('Location', locationSchema);
 

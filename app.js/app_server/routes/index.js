@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+
+// inclui os arquivos dos controllers da API(que criaremos a seguir)
 var ctrlLocations = require('../controllers/locations');
 var crtlOthers = require('../controllers/others');
 
