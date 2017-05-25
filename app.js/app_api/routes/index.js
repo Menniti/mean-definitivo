@@ -9,15 +9,15 @@ var ctrlReviews = require('../controllers/reviews');
 // define as rotas da API para estabelecimentos
 router.get('/locations', ctrlLocations.locationsListByDistance);
 router.post('/locations', ctrlLocations.locationsCreate);
-router.get('/locations/:locationsid', ctrlLocations.locationsReadOne);
-router.post('/locations/:locationsid', ctrlLocations.locationsUpdateOne);
-router.delete('/locations/:locationsid', ctrlLocations.locationsDeleteOne);
+router.get('/locations/:locationid', ctrlLocations.locationsReadOne);
+router.post('/locations/:locationid', ctrlLocations.locationsUpdateOne);
+router.delete('/locations/:locationid', ctrlLocations.locationsDeleteOne);
 
 // resenha reviews (reviews)
 // define as todas da API para reviews
-router.post('/locations/:locationsid/reviews', ctrlReviews.reviewsCreate);
-router.get('/locations/:locationsid/reviews/:reviewsid', ctrlReviews.reviewsReadOne);
-router.put('/locations/:locationsid/reviews/:reviewsid', ctrlReviews.reviewsUpdateOne);
-router.delete('/locations/:locationsid/reviews/:reviewsid', ctrlReviews.reviewsDeleteOne);
+router.post('/locations/:locationid/reviews', ctrlReviews.reviewsCreate);
+router.get('/locations/:locationid/reviews/:reviewsid', ctrlReviews.reviewsReadOne);
+router.put('/locations/:locationid/reviews/:reviewsid', ctrlReviews.reviewsUpdateOne);
+router.delete('/locations/:locationid/reviews/:reviewsid', ctrlReviews.reviewsDeleteOne);
 
 module.exports = router;
