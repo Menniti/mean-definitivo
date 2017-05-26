@@ -43,7 +43,7 @@ module.exports.locationinfo = function(req, res){
 			rating: 3,
 			facilities: ['Hot drinks', 'Food', 'Premium Wifi'],
 			distance: '100m',
-			mapUrl: 'http://www.cbronline.com/wp-content/uploads/2016/06/what-is-URL.jpg',
+			mapUrl: 'http://maps.googleapis.com/maps/api/staticmap?center=51.455041,-0.9690884&zoom=17&size=400x350&sensor=markers=51;455041,-0;96088$scale=2',
 			openingTimes: [{
 				days: 'Monday - Friday',
 				opening: '7:00am',
