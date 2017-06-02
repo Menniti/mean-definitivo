@@ -14,6 +14,26 @@ var sendJsonResponse = function(res, status, content){
 	res.json(content);
 };
 
+var theEarth = (function(){
+	// Valor em KM do raio da terra
+	var earthRadius = 6371;
+	// funcao para converter radianos em metros
+	var getDistanceFromRads = function(rads){
+		return parseFloat(rads * earthRadius);
+	};
+	// funcao para converter metros em radianos
+	var getRadsFromDistance = function(distance){
+		return parseFloat(distance / earthRadius);
+	};
+	// expõe as duas funções
+	return {
+		getDistanceFromRads: getDistanceFromRads,
+		getRadsFromDistance: getRadsFromDistance
+	};
+	
+})();
+
+
 // Nova funcao sendo chamada em cada função do controlador
 // cria um novo location
 module.exports.locationsCreate = function(req, res){
@@ -60,9 +80,23 @@ module.exports.locationsDeleteOne = function(req,res){
 
 // lista as locations pela distancia
 module.exports.locationsListByDistance = function(req,res){
-	Loc
-		.find()
-		.exec(function(err, location){
-			sendJsonResponse(res, 200, location);
-		});
+	// extrai as coordenadas da string de query no url e convert a string em numeros
+	var lng = parseFloat(req.query.lng);
+	var lat = parseFloat(req.query.lat);
+	var geoOptions = {
+		// consideramos um mapa esférico
+		spherical: true,
+		// retorna no máximo 10 resultados
+		num: 10,
+		// cria objetos opção, incluindo uma distancia maxima de 20km
+		maxDistance: theEarth.getRadsFromDistance(20)
+	};
+
+	// Cria a coordenada geoJSON
+	var point = {
+		type: "Point",
+		coordinates: [lng, lat]
+	};
+	// Envia a coordenada ao metodo geoNEar como seu primeiro parametro
+	Loc.geoNear(point, options, callback); 
 };
