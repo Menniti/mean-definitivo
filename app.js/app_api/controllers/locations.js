@@ -87,16 +87,35 @@ module.exports.locationsListByDistance = function(req,res){
 		// consideramos um mapa esférico
 		spherical: true,
 		// retorna no máximo 10 resultados
-		num: 10,
 		// cria objetos opção, incluindo uma distancia maxima de 20km
-		maxDistance: theEarth.getRadsFromDistance(20)
-	};
+		maxDistance: theEarth.getRadsFromDistance(2000),
+		num: 10
 
+	};
 	// Cria a coordenada geoJSON
 	var point = {
 		type: "Point",
 		coordinates: [lng, lat]
 	};
+	console.log(point)
 	// Envia a coordenada ao metodo geoNEar como seu primeiro parametro
-	Loc.geoNear(point, options, callback); 
+	Loc.geoNear(point, geoOptions, function(err, results, stats){
+		// Novo array para armazenar os dados processados
+		var locations = [];
+		// laco que percoe os resultados da query geoNear
+		results.forEach(function(doc){
+			locations.push({
+			// extrai a distancia e converte em radianos para KM, usando a funação criada
+			distance: theEarth.getDistanceFromRads(doc.dis),
+			// coloca o resto dos dados em um objeto de retorno.
+			name: doc.obj.name,
+			address: doc.obj.address,
+			rating: doc.obj.rating,
+			facilities: doc.obj.facilities,
+			_id: doc.obj._id
+			});
+		});
+		// envia os dados processados ao solicitando no formato JSON
+		sendJsonResponse(res, 200, locations);
+	}); 
 };
