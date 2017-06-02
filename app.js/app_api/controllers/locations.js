@@ -87,8 +87,8 @@ module.exports.locationsListByDistance = function(req,res){
 		// consideramos um mapa esférico
 		spherical: true,
 		// retorna no máximo 10 resultados
-		// cria objetos opção, incluindo uma distancia maxima de 20km
-		maxDistance: theEarth.getRadsFromDistance(2000),
+		// cria objetos opção, incluindo uma distancia maxima de 20000m
+		maxDistance: theEarth.getRadsFromDistance(20000),
 		num: 10
 
 	};
@@ -97,25 +97,37 @@ module.exports.locationsListByDistance = function(req,res){
 		type: "Point",
 		coordinates: [lng, lat]
 	};
-	console.log(point)
+
+	if(!lng || !lat){
+		// Verifica se os parametros lng e lat existe no formato correto, caso não devolve 404 e uma mensagem se não tiverem
+		sendJsonResponse(res, 404, {
+			"message": "lgn and lat query are parameters requered"
+		});
+		return;
+	};
 	// Envia a coordenada ao metodo geoNEar como seu primeiro parametro
 	Loc.geoNear(point, geoOptions, function(err, results, stats){
 		// Novo array para armazenar os dados processados
 		var locations = [];
+		if(err){
+			// Se a query geoNear devolver um erro, envia ele com 404
+			sendJsonResponse(res, 404, err);
+		} else {
 		// laco que percoe os resultados da query geoNear
-		results.forEach(function(doc){
-			locations.push({
-			// extrai a distancia e converte em radianos para KM, usando a funação criada
-			distance: theEarth.getDistanceFromRads(doc.dis),
-			// coloca o resto dos dados em um objeto de retorno.
-			name: doc.obj.name,
-			address: doc.obj.address,
-			rating: doc.obj.rating,
-			facilities: doc.obj.facilities,
-			_id: doc.obj._id
+			results.forEach(function(doc){
+				locations.push({
+				// extrai a distancia e converte em radianos para KM, usando a funação criada
+				distance: theEarth.getDistanceFromRads(doc.dis),
+				// coloca o resto dos dados em um objeto de retorno.
+				name: doc.obj.name,
+				address: doc.obj.address,
+				rating: doc.obj.rating,
+				facilities: doc.obj.facilities,
+				_id: doc.obj._id
+				});
 			});
-		});
-		// envia os dados processados ao solicitando no formato JSON
-		sendJsonResponse(res, 200, locations);
+			// envia os dados processados ao solicitando no formato JSON
+			sendJsonResponse(res, 200, locations);
+		}
 	}); 
 };
