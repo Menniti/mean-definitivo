@@ -14,6 +14,7 @@ var sendJsonResponse = function(res, status, content){
 	res.json(content);
 };
 
+// funcao que calcula os radianos e raio de distancia baseado nas coordenadas da terra
 var theEarth = (function(){
 	// Valor em KM do raio da terra
 	var earthRadius = 6371;
@@ -37,6 +38,8 @@ var theEarth = (function(){
 // Nova funcao sendo chamada em cada função do controlador
 // cria um novo location
 module.exports.locationsCreate = function(req, res){
+	console.log(req.body.name);
+	console.log(req.body.address);
 	Loc.create({
 		// aplica o método create no modelo
 		name: req.body.name,
@@ -45,7 +48,7 @@ module.exports.locationsCreate = function(req, res){
 		facilities: req.body.facilities.split(","),	
 		/// converte coordenadas de string para numeros
 		coords: [parseFloat(req.body.lng), parseFloat(req.body.lat)],
-		openingTimes : [{
+		openingTimes: [{
 			days: req.body.days1,
 			opening: req.body.opening1,
 			closing: req.body.closing1,

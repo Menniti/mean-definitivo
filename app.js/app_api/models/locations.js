@@ -51,7 +51,8 @@ var locationSchema = new mongoose.Schema({
 	// coordenadas e pares de coordenadas geográficas.
 	coords: {
 		type: [Number],
-		index: '2dsphere'
+		index: '2dsphere',
+		required: true
 	},
 	openingTimes: [openingTimeSchema],
 	reviews: [reviewSchema]
