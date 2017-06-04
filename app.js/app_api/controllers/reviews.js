@@ -14,81 +14,82 @@ var sendJsonResponse = function(res, status, content){
 };
 
 
-// atualizando a nota media
-var updateAverageRating = function(location){
-	Loc
-		.findById(locationid) // Encontra o documento correto a partir do ID fornecido
-		.select('rating reviews')
-		.exec(
-			function(err, location){
-				if(!err){
-					doSetAverageRating(location);
-				}
-			});
-};
 
-// seta e faz a conta do rating medio
-var doSetAverageRating = function(location){
-	var i, reviewCount, ratingAverage, ratingTotal;
-	if(location.reviews && location.reviews.length > 0){
-		reviewCount = location.reviews.lenght;
-		ratingTotal = 0;
-		// faz um lado que percorre os subdocumentos da resenha e soma as notas
-		for(i = 0; i < reviewCount; i++){
-			ratingTotal = ratingTotal + location.reviews[i].rating;
-		}
-		// calcula a nota media
-		ratingAverage = parseInt(ratingTotal / reviewCount, 10);
-		// atualiza a nota media no documento pai
-		location.rating = ratingAverage;
-		// salva o documento pai no banco.
-		location.save(function(err){
-			if(err){
-				console.log(err);
-			} else {
-				console.log("Average rating update to", ratingAverage);
-			}
-		});
-	}
-};
-
-
-
-// funcao que adiciona e salva subdocumentos review
-var doAddReview = function(req, res, location){
-	// Quando a funcao e alimentada com um documento pai
-	if(!location){
-		sendJsonResponse(res, 404, {
-			"message": "locationid not found"
-		});
-	} else {
-		location.reviews.push({
-			// salva os novos dados no array de subdocumentos...
-			author: req.body.author,
-			rating: req.body.rating,
-			reviewText: req.body.reviewText
-		});
-		location.save(function(err, location){
-			// antes de salvar no documento pai
-			var thisReview;
-			if(err){
-				sendJsonResponse(res, 400, err);
-			} else {
-				// Se a operacao de salvar for completar com sucesso, chama a funcao para atualizar a nota media
-				updateAverageRating(location._id);
-				// Recupera a ultima resenha do array e devolve como uma resposta de confirmacao do Json
-				thisReview = location.reviews[location.reviews.lenght - 1];
-				sendJsonResponse(res, 201, thisReview);
-			}
-		});
-	}
-}
 
 
 // nova função sendo camada em cada função do controlador
 // cria novo review
 module.exports.reviewsCreate = function(req, res){
 	var locationid = req.params.locationid;
+	// atualizando a nota media
+	var updateAverageRating = function(location){
+		Loc
+			.findById(locationid) // Encontra o documento correto a partir do ID fornecido
+			.select('rating reviews')
+			.exec(
+				function(err, location){
+					if(!err){
+						doSetAverageRating(location);
+					}
+				});
+	};
+
+	// seta e faz a conta do rating medio
+	var doSetAverageRating = function(location){
+		var i, reviewCount, ratingAverage, ratingTotal;
+		if(location.reviews && location.reviews.length > 0){
+			reviewCount = location.reviews.length;
+			ratingTotal = 0;
+			// faz um lado que percorre os subdocumentos da resenha e soma as notas
+			for(i = 0; i < reviewCount; i++){
+				ratingTotal = ratingTotal + location.reviews[i].rating;
+			}
+			// calcula a nota media
+			ratingAverage = parseInt(ratingTotal / reviewCount, 10);
+			// atualiza a nota media no documento pai
+			location.rating = ratingAverage;
+			// salva o documento pai no banco.
+			location.save(function(err){
+				if(err){
+					console.log(err);
+				} else {
+					console.log("Average rating update to", ratingAverage);
+				}
+			});
+		}
+	};
+
+
+
+	// funcao que adiciona e salva subdocumentos review
+	var doAddReview = function(req, res, location){
+		// Quando a funcao e alimentada com um documento pai
+		if(!location){
+			sendJsonResponse(res, 404, {
+				"message": "locationid not found"
+			});
+		} else {
+			location.reviews.push({
+				// salva os novos dados no array de subdocumentos...
+				author: req.body.author,
+				rating: req.body.rating,
+				reviewText: req.body.reviewText
+			});
+			location.save(function(err, location){
+				// antes de salvar no documento pai
+				var thisReview;
+				if(err){
+					sendJsonResponse(res, 400, err);
+				} else {
+					// Se a operacao de salvar for completar com sucesso, chama a funcao para atualizar a nota media
+					updateAverageRating(location._id);
+					// Recupera a ultima resenha do array e devolve como uma resposta de confirmacao do Json
+					thisReview = location.reviews[location.reviews.length - 1];
+					sendJsonResponse(res, 201, thisReview);
+				}
+			});
+		}
+	};
 	if (locationid){
 		Loc
 			.findById(locationid)
@@ -107,7 +108,7 @@ module.exports.reviewsCreate = function(req, res){
 		sendJsonResponse(res, 404, {
 			"message": "Not found, locationid required"
 		});
-	}
+	};
 };
 
 // Le e retorna um review
