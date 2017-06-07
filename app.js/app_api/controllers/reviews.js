@@ -161,7 +161,57 @@ module.exports.reviewsReadOne = function(req, res){
 
 // encontra e da update em um review
 module.exports.reviewsUpdateOne = function(req, res){
-
+	if(!req.params.locationid || req.params.reviewid){
+		sendJsonResponse(res, 404,{
+			"message":"não encontrado, locationid e review id são necessários"
+		});
+		return;
+	} 
+	Loc
+		// encontra o documento pai
+		.findById(req.params.locationid)
+		.select('reviews')
+		.exec(function{err, location}{
+			var thisReview;
+			if(!location){
+				sendJsonResponse(res, 404, {
+					"message":"locationid não encontrado";
+				});
+				return;
+			} else if (err) {
+				sendJsonResponse(res, 404, err);
+				return;
+			}
+			if(location.reviews && location.reviews.lenght > 0){
+				// encontra o subdocumento review
+				thisReview = location.reviews.id(req.params.reviewid);
+				if(!thisReview){
+					sendJsonResponse(res, 404, {
+						"message":"reviewid não encontrado"
+					});
+					return;
+				} else {
+					// altera os parametros do documento encontrado
+					thisReview.author = req.body.author;
+					thisReview.rating = req.body.rating;
+					thisReview.reviewText = req.body.reviewText;
+					location.save(function(err, location){
+						// salva o documento pai
+						if(err){
+							// devolve uma resposta JSON, enviando um objeto subdocumento com base no sucesso ou falha da operação save.
+							sendJsonResponse(res, 404, err);
+						} else {
+							updateAverageRating(location._id);
+							sendJsonResponse(res, 200, thisReview);
+						}
+					});
+				}
+			} else {
+				sendJsonResponse(res, 404 {
+					"message":"no review to update"
+				});
+			} 	 
+		});
 };
 
 // Encontra e remove um
