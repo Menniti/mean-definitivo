@@ -10,7 +10,7 @@ var ctrlReviews = require('../controllers/reviews');
 router.get('/locations', ctrlLocations.locationsListByDistance);
 router.post('/locations', ctrlLocations.locationsCreate);
 router.get('/locations/:locationid', ctrlLocations.locationsReadOne);
-router.post('/locations/:locationid', ctrlLocations.locationsUpdateOne);
+router.put('/locations/:locationid', ctrlLocations.locationsUpdateOne);
 router.delete('/locations/:locationid', ctrlLocations.locationsDeleteOne);
 
 // resenha reviews (reviews)

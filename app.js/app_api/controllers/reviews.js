@@ -161,7 +161,7 @@ module.exports.reviewsReadOne = function(req, res){
 
 // encontra e da update em um review
 module.exports.reviewsUpdateOne = function(req, res){
-	sendJsonResponse(res, 200, {"status": "success UpdateOne"});
+
 };
 
 // Encontra e remove um

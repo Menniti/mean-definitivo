@@ -99,7 +99,49 @@ module.exports.locationsReadOne = function(req,res) {
 
 // encontra e da update em um location
 module.exports.locationsUpdateOne = function(req,res){
-	sendJsonResponse(res, 200, {'status': 'success LocationUpdate'})
+	if(!req.params.locationid){
+		sendJsonResponse(res, 404, {
+			"message":"location nao foi encontrado, location é necessário"
+		});
+		console.log(locationid);
+		return;
+	}
+	Loc
+		.findById(req.params.locationid) // encontra o documento correto
+		// utilizamos o método select para selecionar apenas o que desejamos vizualizar como resposta
+		// no exemplo abaixo, utilizamos -reviews e -ratings por que é exatamente o que não queremos vizualizar.
+		.select("-reviews -ratings")
+		.exec(
+			function(err, location){
+			// modifica os parametros do location.name	
+			location.name = req.body.name;
+			// grava todos os parametros de acordo com o formulário do site.
+			location.address = req.body.address;
+			location.facilities = req.body.facilities;
+			location.coords = [parseFloat(req.body.lng),
+				parseFloat(req.body.lat)];
+			location.openingTimes = [{
+				days:req.body.days1,
+				opening:req.body.opening1,
+				closing:req.body.closing1,
+				closed:req.body.closed1,
+			}, {
+				days:req.body.days2,
+				opening:req.body.opening2,
+				closing:req.body.closing2,
+				closed:req.body.closed2,
+			}];
+			// salva o documento location com o método save do mongoose
+			location.save(function(err, location){
+				if(err){
+					// checa se existe algum erro
+					sendJsonResponse(res, 404, err);
+				} else {
+					// caso não tenha erro, envia uma resposta json 200.
+					sendJsonResponse(res, 200, location);
+				}
+			});	
+		});
 };
 
 // encontra e deleta um location
