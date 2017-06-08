@@ -209,5 +209,49 @@ module.exports.reviewsUpdateOne = function(req, res){
 
 // Encontra e remove um
 module.exports.reviewsDeleteOne = function(req, res){
-	sendJsonResponse(res, 200, {"status": "success RemoveOne"})
+	if(!req.params.locationid || !req.params.reviewid){
+		sendJsonResponse(res, 404, {
+			"message":"locationid e reviewid sao necessários"
+		});
+		return;
+	}
+	Loc
+		.findById(req.params.locationid) // Encontra o documento pai-relevante
+		.exec(
+			function(err, location){
+				if(err){
+					sendJsonResponse(res, 400, err);
+					return;
+				} else if (!location) {
+					sendJsonResponse(res, 404, {
+						"message":"locationid nao encontrado"
+					});
+					return;
+				}
+				if(location.reviews && location.reviews.length > 0){
+					if(!location.review.id(req.params.reviewid)){
+						sendJsonResponse(res, 404, {
+							"message": "reviewid not found";
+						});
+					} else {
+						// encontra e apaga o subdocumento correto em um unico passo.
+						location.reviews.id(req.params.reviewid).remove();
+						location.save(function(err){
+							// Salva o documento pai
+							if(err){
+								// Devolve a resposta confirmando sucesso ou falha na operacao
+								sendJsonResponse(res, 404, err);
+							} else {
+								updateAverageRating(location._id);
+								sendJsonResponse(res, 204, null);
+							}
+						});
+					}
+				} else {
+					sendJsonResponse(res, 404, {
+						"message":"No review to delete"
+					});
+				}
+			}
+		);
 };

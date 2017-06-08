@@ -149,10 +149,14 @@ module.exports.locationsDeleteOne = function(req,res){
 	var locationid = req.params.locationid;
 	if(locationid || locationid.length > 0){
 		Loc
-			.findById(locationid) // Chama o método findByIdAndRemove, passando o locationid a ele
-			.exec( // Executa o codigo
+			.findById(locationid) // Chama o método findById passando o locationid a ele
+			.exec( // Executa o método
 				function(err, location){
 					// Faz algo com o documento
+					// código de alteração do documento
+
+
+					// verifica se o location id foi encontrado
 					if(!location){
 						sendJsonResponse(res, 404, {
 						"message":"locationid not found"
@@ -163,6 +167,7 @@ module.exports.locationsDeleteOne = function(req,res){
 						return;
 					}
 					// Remove o documento
+					// seleciona o documento pelo _id e depois remove
 					Loc.remove({_id:locationid}, function(err, location){
 						if(err){
 							sendJsonResponse(res, 404, err);
