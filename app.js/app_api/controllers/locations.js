@@ -146,7 +146,37 @@ module.exports.locationsUpdateOne = function(req,res){
 
 // encontra e deleta um location
 module.exports.locationsDeleteOne = function(req,res){
-	sendJsonResponse(res, 200, {'status': 'success LocationDeleteone'})
+	var locationid = req.params.locationid;
+	if(locationid || locationid.length > 0){
+		Loc
+			.findById(locationid) // Chama o método findByIdAndRemove, passando o locationid a ele
+			.exec( // Executa o codigo
+				function(err, location){
+					// Faz algo com o documento
+					if(!location){
+						sendJsonResponse(res, 404, {
+						"message":"locationid not found"
+					});
+					return;
+					} else if (err) {
+						sendJsonResponse(res, 400, err);
+						return;
+					}
+					// Remove o documento
+					Loc.remove({_id:locationid}, function(err, location){
+						if(err){
+							sendJsonResponse(res, 404, err);
+							return;
+						}
+						sendJsonResponse(res, 204, location); 
+					});
+				}
+			);
+	} else {
+		sendJsonResponse(res, 404, {
+			"message": "No locationid"
+		});
+	}
 };
 
 // lista as locations pela distancia
