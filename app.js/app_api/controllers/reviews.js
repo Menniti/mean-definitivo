@@ -229,9 +229,9 @@ module.exports.reviewsDeleteOne = function(req, res){
 					return;
 				}
 				if(location.reviews && location.reviews.length > 0){
-					if(!location.review.id(req.params.reviewid)){
+					if(!location.reviews.id(req.params.reviewid)){
 						sendJsonResponse(res, 404, {
-							"message": "reviewid not found";
+							"message": "reviewid not found"
 						});
 					} else {
 						// encontra e apaga o subdocumento correto em um unico passo.
