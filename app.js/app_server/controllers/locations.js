@@ -1,6 +1,16 @@
+// request
+var request = require('request');
+// definie as opcoes do local da API para localHost
+var apiOptions = {
+	server: "http://localhost:3000"
+};
+// caso o node esteja em producao
+if(process.env.NODE_ENV === 'production'){
+	apiOptions.server = "production_url"
+};
 
 // homepage rendering
-var renderHomepage = function(req, res){
+var renderHomepage = function(req, res, respondeBody){
 		// o pedido de renderizacao fica dentro da funcao que esta atribuida a variavel renderHomepage
 		res.render('locations-list', {
 		title: 'Loc8r - find a place to work with wifi',
@@ -9,25 +19,7 @@ var renderHomepage = function(req, res){
 			strapline: 'Find places to work with wifi near you!'
 		},
 		sidebar: 'Loc8r helps you find places to work when out and about. Perhaps with coffe, cake or a pint? let loc8r help you find the place you´re looking for.',
-		locations: [{
-			name: 'Starcups',
-			address: '125 High Street, Reading, RG6 1PS',
-			rating: 3,
-			facilities: ['Hot drinks', 'Food', 'Premium Wifi'],
-			distance: '100m'
-		},{
-			name: 'Cafe Hero',
-			address: '1225 High Street',
-			rating: 4,
-			facilities: ['Hot drinks HOT', 'Food HOT'],
-			distance: '200m'
-		},{
-			name: 'Burguer Queen',
-			address: '1225 High Street, reading',
-			rating: 2,
-			facilities: ['Cold drinks cold', 'cold Food'],
-			distance: '1250m'
-		}]
+		locations: respondeBody
 	});
 };
 
@@ -35,7 +27,33 @@ var renderHomepage = function(req, res){
 
 module.exports.homelist = function(req, res){
 	// chama a variavel renderHomepage que contem a funcao de renderizacao e repassa os req - request, e res - reponse
-	renderHomepage(req, res);
+	// renderHomepage(req, res);
+
+	var requestOptions, path;
+	// Define o caminho de chamada para api ( o servidor ja foi definido no inicio do arquivo)
+	path = '/api/locations';
+	requestOptions = {
+		url: apiOptions.server + path,
+		method: "GET",
+		json: {},
+		// query string, parametros passados no GET
+		qs: {
+			lng: -0.9630883,
+			lat: 51.451041,
+			maxDistance: 20000,
+		}
+	};
+	// passando parametros para o request * comentados abaixo
+	// requestOptions e function(err, response, body)
+	// enviando solicitacao e suas opcoes
+	request(
+		requestOptions,
+		// funcao de callback para renderizar a homepage.
+		function(err, response, body) {
+			// passa os dados devolvidos pela API diretamente para funcao renderHomepage
+			renderHomepage(req, res, body);
+		}
+	);
 };
 
 /* Get locationInfo */
