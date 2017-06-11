@@ -1,14 +1,6 @@
 // locations.js
 
-var request = require('request');
-var apiOptions = {
-	server: "http://localhost:3000"
-};
-if(process.env.NODE_ENV === 'production'){
-	apiOptions.server = "production_url"
-};
 
-// required
 //te da acesso a conneccao ao banco de dados
 var mongoose = require('mongoose');
 // chama o modelo location
