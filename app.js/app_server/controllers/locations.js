@@ -1,9 +1,8 @@
 
-
-/* Get homeList */
-
-module.exports.homelist = function(req, res){
-	res.render('locations-list', {
+// homepage rendering
+var renderHomepage = function(req, res){
+		// o pedido de renderizacao fica dentro da funcao que esta atribuida a variavel renderHomepage
+		res.render('locations-list', {
 		title: 'Loc8r - find a place to work with wifi',
 		pageHeader: {
 			title: 'Loc8r',
@@ -30,6 +29,13 @@ module.exports.homelist = function(req, res){
 			distance: '1250m'
 		}]
 	});
+};
+
+/* Get homeList */
+
+module.exports.homelist = function(req, res){
+	// chama a variavel renderHomepage que contem a funcao de renderizacao e repassa os req - request, e res - reponse
+	renderHomepage(req, res);
 };
 
 /* Get locationInfo */
