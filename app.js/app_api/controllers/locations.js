@@ -204,7 +204,7 @@ module.exports.locationsListByDistance = function(req,res){
 		coordinates: [lng, lat]
 	};
 
-	if(!lng || !lat){
+	if((!lng && lgn!==0) || (!lat && lat!==0)){
 		// Verifica se os parametros lng e lat existe no formato correto, caso não devolve 404 e uma mensagem se não tiverem
 		sendJsonResponse(res, 404, {
 			"message": "lgn and lat query are parameters requered"

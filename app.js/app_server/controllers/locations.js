@@ -10,7 +10,18 @@ if(process.env.NODE_ENV === 'production'){
 };
 
 // homepage rendering
-var renderHomepage = function(req, res, respondeBody){
+var renderHomepage = function(req, res, responseBody){
+		var message; // define uma variável para armazenar mensagem
+		console.log(responseBody)
+		if(!(responseBody instanceof Array)){ 
+			// se a resposta não for um array, define uma mensagem e responseBody como um array vazio.
+			message: "API Lookup error";
+			responseBody = [];
+		} else {
+			if(!responseBody.length){ // caso o array seja nulo, devolve nenhum resultado
+				message = "no places found nearby";
+			}
+		}
 		// o pedido de renderizacao fica dentro da funcao que esta atribuida a variavel renderHomepage
 		res.render('locations-list', {
 		title: 'Loc8r - find a place to work with wifi',
@@ -19,11 +30,24 @@ var renderHomepage = function(req, res, respondeBody){
 			strapline: 'Find places to work with wifi near you!'
 		},
 		sidebar: 'Loc8r helps you find places to work when out and about. Perhaps with coffe, cake or a pint? let loc8r help you find the place you´re looking for.',
-		locations: respondeBody
+		locations: responseBody,
+		message: message
 	});
 };
 
 /* Get homeList */
+
+var _formatDistance = function(distance){
+	var numDistance, unit;
+	if(distance > 1){
+		numDistance = parseFloat(distance).toFixed(1);
+		unit = 'km';
+	} else {
+		numDistance = parseInt(distance * 1000,10);
+		unit = 'm';
+	}
+	return numDistance + unit;
+};
 
 module.exports.homelist = function(req, res){
 	// chama a variavel renderHomepage que contem a funcao de renderizacao e repassa os req - request, e res - reponse
@@ -38,8 +62,10 @@ module.exports.homelist = function(req, res){
 		json: {},
 		// query string, parametros passados no GET
 		qs: {
-			lng: -0.9630883,
-			lat: 51.451041,
+			lng:1,
+			lat:1,
+			//lng: -0.9630883,
+			//lat: 51.451041,
 			maxDistance: 20000,
 		}
 	};
@@ -50,8 +76,15 @@ module.exports.homelist = function(req, res){
 		requestOptions,
 		// funcao de callback para renderizar a homepage.
 		function(err, response, body) {
+			var i, data;
+			data = body;
+			if(response.statusCode === 200 && data.length) {	
+				for(i=0; i<data.length; i++){
+					data[i].distance = _formatDistance(data[i].distance);
+				}
+			}
 			// passa os dados devolvidos pela API diretamente para funcao renderHomepage
-			renderHomepage(req, res, body);
+			renderHomepage(req, res, data);
 		}
 	);
 };
