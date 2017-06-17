@@ -17,7 +17,7 @@ block content
 							.panel-heading
 								h2.panel-title Opening hours
 							.panel-body
-								each open in locations.opening
+								each open in locations.openingTimes
 									p= open
 						.panel.panel-primary
 							.panel-heading
@@ -42,13 +42,13 @@ block content
 							.panel-body.review-container
 								.row
 									.review
-										each author in reviews.authors
+										each review in locations.reviews
 											.well.well-sm.review-header
 												span.rating
-													+outputRating(author.rating)
-												span.reviewAuthor= author.name
-												small.reviewTimesstamp= author.date
+													+outputRating(review.rating)
+												span.reviewAuthor= review.author
+												small.reviewTimestamp= review.date
 											.col-xs-12
-												p= author.comment
+												p= review.comment
 		.col-xs-12.col-md-3
 			p.lead= sidebar

@@ -62,10 +62,10 @@ module.exports.homelist = function(req, res){
 		json: {},
 		// query string, parametros passados no GET
 		qs: {
-			lng:1,
-			lat:1,
-			//lng: -0.9630883,
-			//lat: 51.451041,
+			//lng:1,
+			//lat:1,
+			lng: -0.9630883,
+			lat: 51.451041,
 			maxDistance: 20000,
 		}
 	};
@@ -89,46 +89,40 @@ module.exports.homelist = function(req, res){
 	);
 };
 
+// renderDetailPage
+
+var renderDetailPage = function(req, res, locDetail){ // locDetail e um novo parametro com o JSON vindo da funcao request
+	console.log(locDetail)
+	res.render('location-info', {
+		// faz referencia aos dados a itens especificos
+		title: locDetail.name,
+		pageHeader: {title: locDetail.name},
+		sidebar: 'Loc8r helps you find places to work when out and about. Perhaps with coffe, cake or a pint? let loc8r help you find the place you´re looking for.',
+		// repassa a visao o objeto de dados locDetail, que contem todos os detalhes do estabelecimento.
+		locations: locDetail
+	});
+};
+
 /* Get locationInfo */
 module.exports.locationinfo = function(req, res){
-	res.render('location-info', {
-		title:'locationInfo',
-		sidebar: 'Loc8r helps you find places to work when out and about. Perhaps with coffe, cake or a pint? let loc8r help you find the place you´re looking for.',
-		locations: {
-			name: 'Starcups',
-			address: '125 High Street, Reading, RG6 1PS',
-			rating: 3,
-			facilities: ['Hot drinks', 'Food', 'Premium Wifi'],
-			distance: '100m',
-			mapUrl: 'http://maps.googleapis.com/maps/api/staticmap?center=51.455041,-0.9690884&zoom=17&size=400x350&sensor=markers=51;455041,-0;96088$scale=2',
-			openingTimes: [{
-				days: 'Monday - Friday',
-				opening: '7:00am',
-				close: '7:00pm',
-				closed: false
-			},{
-				days: 'Saturday',
-				opening: '8:00am', 
-				close: '5:00pm',
-				closed: false
-			},{
-				days: 'Sunday',
-				closed: true	
-			}]  
-		},
-		reviews:{
-			authors: [{
-				name: 'Simon Holmes',
-				timestamp: '16 July 2013',
-				reviewText: 'What a great place. I cant say enough good things about it',
-				rating: 3,
-			},{
-				name: 'Charlie Chaplin16',
-				timestamp: '16 July 2013',
-				reviewText: 'It was okay. Coffee wasnt great, but the wifi was fast.',
-				rating: 4,
-			}]
+	var requestOptions, path;
+	path = "/api/locations/" + req.params.locationid; // extrai os parametros a partir da URL para colocar na URL da API
+	console.log(req.params.locationid)
+	// requestOptions define todos os parametros do request, antes de fazer a chamada da API.
+	requestOptions = {
+		url: apiOptions.server + path,
+		method: "GET",
+		json: {}
+	};
+	request(requestOptions, function(err, response, body){
+		// faz um pedido para renderizar a pagina, depois que a API responder
+		var data = body;
+		data.coords = {
+			lng: body.coords[0],
+			lat: body.coords[1]
 		}
+		// envia dados transformados para renderizacao
+		renderDetailPage(req, res, data);
 	});
 };
 
