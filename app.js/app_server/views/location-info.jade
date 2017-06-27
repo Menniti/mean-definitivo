@@ -17,26 +17,27 @@ block content
 							h2.panel-title Opening hours
 						.panel-body
 							each time in locations.openingTimes
-								| #{time.days} :
-								if time.closed
-									| closed
-								else
-									| #{time.opening} - #{time.closing}
+								p
+									| #{time.days} :
+									if time.closed
+										| closed
+									else
+										| #{time.opening} - #{time.closing}
 					.panel.panel-primary
 						.panel-heading
 							h2.panel-title Facilities
 						.panel-body
 							each facility in locations.facilities
 								span.label.label-warning
-									span.glyphicon.glyphicon-ok= facility
+									span.glyphicon.glyphicon-ok
 									| &nbsp;#{facility}
-								| &nbps
+								| &nbps;
 				.col-xs-12.col-sm-6.location-map
 					.panel-panel-primary
 						.panel-heading
-							h2.panel-title Location Map
+							h2.panel-title Location map
 						.panel-body
-							// img.img-responsive.img-rounded(src="http://maps.googleapis.com/maps/api/staticmap?center=#{location.coords.lat},#{location.coords.lng}&zoom=17&size=400x350&sensor=false&markers=#{location.coords.lat},#{location.coords.lng}&scale=2")
+							img.img-responsive.img-rounded(src="http://maps.googleapis.com/maps/api/staticmap?center=#{locations.coords.lat},#{locations.coords.lng}&zoom=17&size=400x350&sensor=false&markers=#{locations.coords.lat},#{locations.coords.lng}&scale=2")
 			.row
 				.col-xs-12
 					.panel-panel-primary.review-panel
@@ -52,9 +53,9 @@ block content
 											span.rating
 												+outputRating(review.rating)
 											span.reviewAuthor #{review.author}
-											small.reviewTimestamp #{review.date}
+											small.reviewTimestamp 
 										.col-xs-12
-											p= review.comment
+											p !{(review.reviewText).replace(/\n/g, '<br/>')}
 		.col-xs-12.col-md-3
 			//p.lead #{location.name} #{sidebar.context}
 			//p= sidebar.callToAction

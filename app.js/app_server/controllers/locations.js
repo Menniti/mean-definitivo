@@ -64,8 +64,8 @@ module.exports.homelist = function(req, res){
 		qs: {
 			//lng:1,
 			//lat:1,
-			lng: -0.9630883,
-			lat: 51.451041,
+			lng: -0.9690881,
+			lat: 51.45504,
 			maxDistance: 20000,
 		}
 	};
