@@ -64,9 +64,9 @@ module.exports.homelist = function(req, res){
 		qs: {
 			//lng:1,
 			//lat:1,
-			lng: -0.9690881,
-			lat: 51.45504,
-			maxDistance: 20000,
+			lng: -0.79922599,
+			lat: 51.378091,
+			maxDistance: 2000000000,
 		}
 	};
 	// passando parametros para o request * comentados abaixo
@@ -117,6 +117,7 @@ module.exports.locationinfo = function(req, res){
 	request(requestOptions, function(err, response, body){
 		// faz um pedido para renderizar a pagina, depois que a API responder
 		var data = body;
+		console.log(data.coords)
 		data.coords = {
 			lng: body.coords[0],
 			lat: body.coords[1]

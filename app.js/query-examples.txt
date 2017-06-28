@@ -66,3 +66,30 @@
 		{ "days" : "Saturday", "opening" : "12:00am", "close" : "12:00pm", "closed" : false }, 
 		{ "days" : "Sunday", "closed" : true } ] 
 	} 
+
+==========================================================
+	{
+	"name" : "Bibibib", 
+	"address" : "125 High Street, Reading, RG6 1PS", "rating" : 3, 
+	"facilities" : [ "Hot EPIC", "Food EPIC", "Premium Wifi EPIC" ], 
+	"distance" : "100m", 
+	"coords" : [ -0.7992599, 51.378091 ], 
+	"openingTimes" : [ 
+		{ "days" : "Monday - Friday", "opening" : "8:00am", "close" : "8:00pm", "closed" : false }, 
+		{ "days" : "Saturday", "opening" : "12:00am", "close" : "12:00pm", "closed" : false }, 
+		{ "days" : "Sunday", "closed" : true } ] 
+	} 
+
+	{
+		name: "Bibibib"
+	}, {
+		$push: {
+			reviews:{
+				author: "hohohoh",
+				_id: ObjectId(),
+				rating: 5,
+				timestamp: new Date("Jul 16, 2013"),
+				reviewText: "What a great place. I can't say enough good about it"
+			}
+		} 
+	}

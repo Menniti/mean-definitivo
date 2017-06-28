@@ -37,13 +37,13 @@ block content
 						.panel-heading
 							h2.panel-title Location map
 						.panel-body
-							img.img-responsive.img-rounded(src="http://maps.googleapis.com/maps/api/staticmap?center=#{locations.coords.lat},#{locations.coords.lng}&zoom=17&size=400x350&sensor=false&markers=#{locations.coords.lat},#{locations.coords.lng}&scale=2")
+							img.img-responsive(src="maps.googleapis.com/maps/api/staticmap?center=#{locations.coords.lat},#{locations.coords.lng}&zoom=17&size=400x350&sensor=false&markers=#{locations.coords.lat},#{locations.coords.lng}&scale=2")
 			.row
 				.col-xs-12
 					.panel-panel-primary.review-panel
 						.panel-heading
 							a.btn.btn-default.pull-right(
-								href='location/review/new') Add Review
+								href='review/new') Add Review
 							h2.panel-title Customer reviews
 						.panel-body.review-container
 							each review in locations.reviews
