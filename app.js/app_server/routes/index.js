@@ -8,7 +8,10 @@ var crtlOthers = require('../controllers/others');
 /* GET locations pages. */
 router.get('/', ctrlLocations.homelist);
 router.get('/location/:locationid', ctrlLocations.locationinfo);
-router.get('/location/review/new', ctrlLocations.addreview);
+// inserindo o locationid na rota abaixo, com objetivo de captura-la no formulário
+router.get('/location/:locationid/review/new', ctrlLocations.addreview);
+// inserindo a mesma rota acima, no método post, mas colocando um controller diferente
+router.post('/location/:locationid/review/new', ctrlLocations.doAddReview);
 
 /* GET Other pages */
 router.get('/about', crtlOthers.about);

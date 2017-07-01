@@ -103,8 +103,32 @@ var renderDetailPage = function(req, res, locDetail){ // locDetail e um novo par
 	});
 };
 
-/* Get locationInfo */
-module.exports.locationinfo = function(req, res){
+// tratamento de erros de códigos vindo da API, caso o código não seja 200
+
+var _showError = function(req, res, status){
+	var title, 
+		content;
+	// caso o status seja 404, define o conteúdo da página
+	if(status === 404){
+		title = "404, page not found";
+		content = "Oh dear, looks like you are not having API information sorry";
+	} else {
+		// caso o status seja diferente de 404, alguma coisa deu errada na API
+		title = "Something got wrong, really wrong"
+		content = "Your api for somereason get back other information then 404, what happenedd ?";
+	}
+	// utiliza o parametro status para definir o status de resposta
+	res.status(status);
+	// renderiza a pagina, envia ao navegador, de acordo com o status do retorno da API
+	res.render('generic-text',{
+		title: title,
+		content: content
+	});
+}
+
+// função reutilizável para obtencao dos estabelecimentos
+// aceita um callback como terceiro paramatro e contem o codigo usado no controlador
+var getLocationInfo = function(req, res, callback){
 	var requestOptions, path;
 	path = "/api/locations/" + req.params.locationid; // extrai os parametros a partir da URL para colocar na URL da API
 	console.log(req.params.locationid)
@@ -118,17 +142,51 @@ module.exports.locationinfo = function(req, res){
 		// faz um pedido para renderizar a pagina, depois que a API responder
 		var data = body;
 		console.log(data.coords)
-		data.coords = {
-			lng: body.coords[0],
-			lat: body.coords[1]
+		// verifica se a resposta da api é 200
+		if(response.statusCode === 200) {
+			// continua a renderização caso a resposta seja 200
+			data.coords = {
+				lng: body.coords[0],
+				lat: body.coords[1]
+			}
+		//caso receba a resposta positiva da API response, invoca o callback em vez de uma função identificada
+			callback(req, res, data);
+		} else {
+			// se o status for diferente de 200, repassa o erro para a função _showError
+			_showError(req, res, response.statusCode);
 		}
-		// envia dados transformados para renderizacao
-		renderDetailPage(req, res, data);
+	});
+};
+
+
+/* Get locationInfo */
+module.exports.locationinfo = function(req, res){
+	// chama a funcao getLocationInfo passando um callback como parametro para a funcao renderDetailPage
+	getLocationInfo(req, res, function(req, res, responseData){
+		renderDetailPage(req, res, responseData);
+	});
+};
+
+// cria a função para abrir o controlador do addReview
+var renderReviewForm = function(req, res, locDetail){
+	res.render('location-review-form', {
+		title: 'Review ' + locDetail.name + ' on Loc8r',
+		pageHeader: { title: 'Review ' + locDetail.name}
 	});
 };
 
 /* Get addReview */
 module.exports.addreview = function(req, res){
-	res.render('location-review-form', {title:'addReview'});
+	// chama a função que requisita as informações da LocationInfo
+	getLocationInfo(req, res, function(req, res, responseData){
+		// chama a função que irá rederizar o addReview
+		// tambem passa a renderReviewForm como callback
+		renderReviewForm(req, res, responseData);
+	});	
 };
 
+/* Post doAddReview */
+
+module.exports.doAddReview = function(req, res){
+	res.render('', {title: "doAddReview"});
+};
