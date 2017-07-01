@@ -193,7 +193,7 @@ module.exports.doAddReview = function(req, res){
 	// capturando o id do location
 	locationid = req.params.locationid;
 	// criando o url para a requisicao na API
-	path = 'api/locations/' + locationid + 'review';
+	path = '/api/locations/' + locationid + '/reviews';
 	// capturando as informacoes do formulario e jogando na variavel postdata
 	var postdata = {
 		author: req.body.name,
@@ -202,7 +202,7 @@ module.exports.doAddReview = function(req, res){
 	}	
 	// criando o objeto de requesicao
 	requestOptions = {
-		url: apiOptions.server + path
+		url: apiOptions.server + path,
 		method: 'POST',	
 		json: postdata
 	}
@@ -219,5 +219,4 @@ module.exports.doAddReview = function(req, res){
 				}
 			}
 		)
-	res.render('', {title: "doAddReview"});
 };
