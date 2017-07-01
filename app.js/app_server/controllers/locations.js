@@ -185,8 +185,39 @@ module.exports.addreview = function(req, res){
 	});	
 };
 
+
 /* Post doAddReview */
 
 module.exports.doAddReview = function(req, res){
+	var requestOptions, path, locationid, postdata;
+	// capturando o id do location
+	locationid = req.params.locationid;
+	// criando o url para a requisicao na API
+	path = 'api/locations/' + locationid + 'review';
+	// capturando as informacoes do formulario e jogando na variavel postdata
+	var postdata = {
+		author: req.body.name,
+		rating: parseInt(req.body.rating, 10),
+		reviewText: req.body.review
+	}	
+	// criando o objeto de requesicao
+	requestOptions = {
+		url: apiOptions.server + path
+		method: 'POST',	
+		json: postdata
+	}
+	// efetuando a request a api
+	request( 
+			// parametros de requisicao
+			requestOptions,
+			function(err, response, body){
+				if(response.statusCode === 201){
+					// caso a resposta da api seja gravada com sucesso, redireciona para location/locationid
+					res.redirect('/location/' + locationid);	
+				} else {
+					_showError(req, res, response.statusCode);
+				}
+			}
+		)
 	res.render('', {title: "doAddReview"});
 };
