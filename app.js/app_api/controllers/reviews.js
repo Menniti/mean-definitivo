@@ -67,6 +67,7 @@ var doAddReview = function(req, res, location){
 			// antes de salvar no documento pai
 			var thisReview;
 			if(err){
+				console.log(err);
 				sendJsonResponse(res, 400, err);
 			} else {
 				// Se a operacao de salvar for completar com sucesso, chama a funcao para atualizar a nota media

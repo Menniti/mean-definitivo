@@ -171,7 +171,9 @@ module.exports.locationinfo = function(req, res){
 var renderReviewForm = function(req, res, locDetail){
 	res.render('location-review-form', {
 		title: 'Review ' + locDetail.name + ' on Loc8r',
-		pageHeader: { title: 'Review ' + locDetail.name}
+		pageHeader: { title: 'Review ' + locDetail.name},
+		// em caso de erro  repassa o erro para view
+		error:req.query.err
 	});
 };
 
@@ -199,24 +201,33 @@ module.exports.doAddReview = function(req, res){
 		author: req.body.name,
 		rating: parseInt(req.body.rating, 10),
 		reviewText: req.body.review
-	}	
+	};	
 	// criando o objeto de requesicao
 	requestOptions = {
 		url: apiOptions.server + path,
 		method: 'POST',	
 		json: postdata
-	}
-	// efetuando a request a api
-	request( 
+	};
+	// caso um dos valores do postdata estiver vazio, ele retorna falso e retorna a view /review/new
+	if(!postdata.author || !postdata.rating || !postdata.reviewText) {
+		res.redirect('/location/' + locationid + '/review/new?err=val');
+	} else {
+		// efetuando a request a api
+		request( 
 			// parametros de requisicao
 			requestOptions,
 			function(err, response, body){
 				if(response.statusCode === 201){
 					// caso a resposta da api seja gravada com sucesso, redireciona para location/locationid
-					res.redirect('/location/' + locationid);	
+					res.redirect('/location/' + locationid);			
+				} // verifica se o status e 400 e se o body.name e um validation error
+				  else if (response.statusCode === 400 && body.name === 'ValidationError'){	
+					// se verdadeiro, redireciona o ususario para o formulario de resenhas, passando um flag de erro na query string
+					res.redirect('/location/' + locationid + '/review/new?err=val');
 				} else {
 					_showError(req, res, response.statusCode);
 				}
 			}
-		)
+		);
+	}
 };
