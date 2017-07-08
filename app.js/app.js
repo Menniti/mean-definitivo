@@ -1,10 +1,16 @@
+// dotenv modulo que possibilita ter variaveis de ambiente
+require('dotenv').load();
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-require('./app_api/models/db')
+var passport = require('passport');
+
+require('./app_api/models/db');
+// inclui a estrategia do passport
+require('./app_api/config/passport');
 
 // app server
 var routes = require('./app_server/routes/index');
@@ -25,6 +31,9 @@ app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// passport devera ser inicializado apos as rotas estaticas e antes da api, que usara a autenticacao
+app.use(passport.initialize());
 
 app.use('/', routes);
 app.use('/api', routesApi);
