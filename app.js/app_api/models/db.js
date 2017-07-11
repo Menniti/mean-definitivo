@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
-require('./locations')
+require('./locations');
+require('./users');
 // define uma variavel de conneccao com o mongoose
 var dbURI = 'mongodb://127.0.0.1:27017/Loc8r';
 if(process.env.NODE_ENV ==='production'){
