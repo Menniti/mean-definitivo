@@ -50,7 +50,7 @@ var updateAverageRating = function(locationid){
 				});
 };
 // funcao que adiciona e salva subdocumentos review
-var doAddReview = function(req, res, location){
+var doAddReview = function(req, res, location, author){
 	// Quando a funcao e alimentada com um documento pai
 	if(!location){
 		sendJsonResponse(res, 404, {
@@ -59,7 +59,8 @@ var doAddReview = function(req, res, location){
 	} else {
 		location.reviews.push({
 			// salva os novos dados no array de subdocumentos...
-			author: req.body.author,
+			// usa o parametro author para criar sub docs de resenha
+			author: author,
 			rating: req.body.rating,
 			reviewText: req.body.reviewText
 		});
@@ -80,29 +81,70 @@ var doAddReview = function(req, res, location){
 	}
 };
 
+
+// chama o model User, deixando disponivel
+var User = mongoose.model('User');
+// getAuthor
+var getAuthor = function(req, res, callback){
+	// confere se o objeto de solicitacao possui as infos do JWT
+	if(req.payload && req.payload.email){
+		User
+			// executa o findOne no model User
+			// utilizar o email para encontrar o usuario
+			.findOne({email: req.payload.email})
+			// executa a query
+
+			.exec(function(err, user){
+				// caso ocorra algum erro, retorna o erro
+				if(err){
+					console.log(err);
+					sendJsonResponse(res, 404, err);
+					return;
+				} // caso o usuario nao seja encontrado, retorna uma mensagem 
+				else if(!user){
+					sendJsonResponse(res, 404, {
+						"message": "user do not found"
+					})
+				} 
+				// se o usuario for encontrado, retorna o callback com o nome do usuario
+				callback(req, res, user.name);
+			});
+	} else {
+		sendJsonResponse(res, 404,{
+			"message": "User not found"
+		});
+		return;
+	}
+};
+
+
 // nova função sendo camada em cada função do controlador
 // cria novo review
 module.exports.reviewsCreate = function(req, res){
 	var locationid = req.params.locationid;
-	if (locationid){
-		Loc
-			.findById(locationid)
-			.select('reviews')
-			.exec(function(err, location){
-				if(err){
-					sendJsonResponse(res, 400, err);
-				} else {
-					// Se a operacao de busca tiver sucesso, isso chamara a nova funcao para adicionar a resenha
-					// passando a ela os objeto de solicitacao, resposta e estabelecimento
-					doAddReview(req, res, location);
+	// chama a funcao getAuthor e passa o codigo do controlador original como callback; passa o nome do usuario para o callback
+	getAuthor(req, res, function(req, res, userName){
+		if (locationid){
+			Loc
+				.findById(locationid)
+				.select('reviews')
+				.exec(function(err, location){
+					if(err){
+						sendJsonResponse(res, 400, err);
+					} else {
+						// Se a operacao de busca tiver sucesso, isso chamara a nova funcao para adicionar a resenha
+						// passando a ela os objeto de solicitacao, resposta e estabelecimento
+						// passa o nome do usuario para a funcao doAddReview
+						doAddReview(req, res, location, userName);
+					}
 				}
-			}
-		);
-	} else {
-		sendJsonResponse(res, 404, {
-			"message": "Not found, locationid required"
-		});
-	};
+			);
+		} else {
+			sendJsonResponse(res, 404, {
+				"message": "Not found, locationid required"
+			});
+		};
+	});// fecha getAuthor
 };
 
 // Le e retorna um review

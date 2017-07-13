@@ -1,5 +1,14 @@
 var express = require('express');
 var router = express.Router();
+var jwt = require('express-jwt');
+
+
+var auth = jwt({
+	// define a chave secreta usando a variavel de ambiente
+	secret: process.env.JWT_SECRET,
+	// define a propriedade req como payload
+	userProperty: 'payload'
+});
 
 // inclui os arquivos dos controllers da API(que criaremos a seguir)
 var ctrlLocations = require('../controllers/locations');
@@ -16,10 +25,11 @@ router.delete('/locations/:locationid', ctrlLocations.locationsDeleteOne);
 
 // resenha reviews (reviews)
 // define as todas da API para reviews
-router.post('/locations/:locationid/reviews', ctrlReviews.reviewsCreate);
+// Adicionando auth, middleware que ira verificar se o usuario esta autenticado antes de entrar na rota.
+router.post('/locations/:locationid/reviews', auth, ctrlReviews.reviewsCreate);
 router.get('/locations/:locationid/reviews/:reviewid', ctrlReviews.reviewsReadOne);
-router.put('/locations/:locationid/reviews/:reviewid', ctrlReviews.reviewsUpdateOne);
-router.delete('/locations/:locationid/reviews/:reviewid', ctrlReviews.reviewsDeleteOne);
+router.put('/locations/:locationid/reviews/:reviewid', auth, ctrlReviews.reviewsUpdateOne);
+router.delete('/locations/:locationid/reviews/:reviewid', auth, ctrlReviews.reviewsDeleteOne);
 
 // api register
 router.post('/register', ctrlAuth.register);
